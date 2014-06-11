@@ -37,6 +37,7 @@ public class TechnionFoodDb {
 	private final String REST_PICTURE = "logo";
 	private final String REST_NUM_OF_REVIEWS = "numberOfReviews";
 	private final String REST_SUM_OF_REVIEWS = "sumOfReviews";
+	private final String REST_TELEPHONE = "telephoneNumber";
 	
 	private final String DISH_ID="id";
 	private final String DISH_NAME = "name";
@@ -191,6 +192,7 @@ public class TechnionFoodDb {
 				+ REST_LAT + " DOUBLE, "
 				+ REST_LNG + " DOUBLE, "
 				+ REST_PICTURE + " VARCHAR(" + basicStringColumnSize + ") , "
+				+ REST_TELEPHONE + " VARCHAR(" + basicStringColumnSize + ") NOT NULL, "
 				+ "PRIMARY KEY("+REST_ID+")"
 				+ ")");
 	}
@@ -259,18 +261,19 @@ public class TechnionFoodDb {
 	}
 	
 	public boolean addRestaurant(String name, String address, double lat, double lng,
-			double ranking, String path) throws SQLException{
+			double ranking, String path, String tel) throws SQLException{
 		Connection con = getAutoCommitConnection();
 		boolean res = true;
 		try{
-			PreparedStatement stmt = con.prepareStatement("INSERT INTO "+TBL_RESTAURANT+" VALUES"
-					+ "(?,?,?,?,?,?)");
+		PreparedStatement stmt = con.prepareStatement("INSERT INTO "+TBL_RESTAURANT+" VALUES"
+					+ "(?,?,?,?,?,?,?)");
 			stmt.setInt(1, 0);
 			stmt.setString(2, name);
 			stmt.setString(3, address);
 			stmt.setDouble(4, lat);
 			stmt.setDouble(5, lng);
 			stmt.setString(6, path);
+			stmt.setString(7, tel);
 			stmt.executeUpdate();
 		}
 		catch(SQLException ex){
@@ -405,7 +408,7 @@ public class TechnionFoodDb {
 				Restaurant restaurant = new Restaurant(queryRes.getInt(REST_ID),
 						queryRes.getString(REST_NAME), queryRes.getString(REST_ADDRESS),
 						queryRes.getDouble(REST_LAT), queryRes.getDouble(REST_LNG), 
-						ranking, queryRes.getString(REST_PICTURE));
+						ranking, queryRes.getString(REST_PICTURE),queryRes.getString(REST_TELEPHONE));
 				res.add(restaurant);
 			}
 		}catch(Exception ex){
@@ -438,7 +441,7 @@ public class TechnionFoodDb {
 				restaurant = new Restaurant(queryRes.getInt(REST_ID),
 						queryRes.getString(REST_NAME), queryRes.getString(REST_ADDRESS),
 						queryRes.getDouble(REST_LAT), queryRes.getDouble(REST_LNG), 
-						ranking, queryRes.getString(REST_PICTURE));
+						ranking, queryRes.getString(REST_PICTURE), queryRes.getString(REST_TELEPHONE));
 			}
 		}catch(Exception ex){
 			System.out.println("Error during extrating resturant with id: "+ restId + " from db: " + ex.getMessage());

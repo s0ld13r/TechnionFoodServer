@@ -40,7 +40,7 @@ public class AppInitContextListener implements ServletContextListener {
     @SuppressWarnings("deprecation")
 	private void initRestaurants(TechnionFoodDb db) throws SQLException{
     	//-----Cafe Cafe----- restaurant #1
-		db.addRestaurant("cafe-cafe", "Technion, Student House 3rd floor", 32.776397, 35.022832, 0, "cafecafe.jpg");
+		db.addRestaurant("cafe-cafe", "Technion, Student House 3rd floor", 32.776397, 35.022832, 0, "cafecafe.jpg", "0543136555");
 		db.addOpeningTime(1, 1, new Time(8, 0, 0), new Time(21, 0, 0));
 		db.addOpeningTime(1, 2, new Time(8, 0, 0), new Time(21, 0, 0));
 		db.addOpeningTime(1, 3, new Time(8, 0, 0), new Time(21, 0, 0));
@@ -86,7 +86,7 @@ public class AppInitContextListener implements ServletContextListener {
 		db.addRestaurantReview(1, "Shira", 5, "Great service");
 		
 		//-----Mandarin----- restaurant #2
-		db.addRestaurant("Mandarin", "Technion, Ulman Building 3rd floor", 32.777170, 35.023840, 0, "mandarin.jpg");
+		db.addRestaurant("Mandarin", "Technion, Ulman Building 3rd floor", 32.777170, 35.023840, 0, "mandarin.jpg","0545882481");
 
 		db.addOpeningTime(2, 1, new Time(7, 0, 0), new Time(20, 0, 0));
 		db.addOpeningTime(2, 2, new Time(7, 0, 0), new Time(20, 0, 0));
@@ -130,7 +130,7 @@ public class AppInitContextListener implements ServletContextListener {
 		db.addDish("Tea", 5, "Variety of flavors", 2, 4, "tea.jpg");				//dish #22
 		
 		//-----Greg----- restaurant #3
-		db.addRestaurant("Greg", "Technion, Taub Building 1st floor", 32.777680, 35.021539, 0, "greg.jpg");
+		db.addRestaurant("Greg", "Technion, Taub Building 1st floor", 32.777680, 35.021539, 0, "greg.jpg","0540000000");
 		db.addOpeningTime(3, 1, new Time(9, 0, 0), new Time(19, 0, 0));
 		db.addOpeningTime(3, 2, new Time(9, 0, 0), new Time(19, 0, 0));
 		db.addOpeningTime(3, 3, new Time(9, 0, 0), new Time(19, 0, 0));

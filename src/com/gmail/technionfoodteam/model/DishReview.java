@@ -7,6 +7,7 @@ public class DishReview extends Review {
 	public static String JSON_OBJECT_NAME = "dish_review";
 	public static String JSON_DISH_ID = "dish_id";
 	private int dishId;
+	public DishReview(){}
 	public DishReview(int dishId, String username, double ranking, String description){
 		super(username,ranking,description);
 		this.dishId = dishId;
@@ -30,5 +31,6 @@ public class DishReview extends Review {
 		DishReview dishReview = new DishReview(obj.getInt(JSON_DISH_ID), review.getUsername(), review.getRanking(), review.getDescription());
 		return dishReview;
 	}
+
 	
 }

@@ -7,6 +7,7 @@ public class RestaurantReview extends Review {
 	public static String JSON_OBJECT_NAME = "restaurant_review";
 	public static String JSON_REST_ID = "rest_id";
 	private int restaurantId;
+	public RestaurantReview(){}
 	public RestaurantReview(int dishId, String username, double ranking, String description){
 		super(username,ranking,description);
 		this.restaurantId = dishId;
@@ -25,9 +26,9 @@ public class RestaurantReview extends Review {
 		return obj;
 	}
 	@Override
-	public DishReview fromJSON(JSONObject obj) throws JSONException {
+	public RestaurantReview fromJSON(JSONObject obj) throws JSONException {
 		Review review =  super.fromJSON(obj);
-		DishReview dishReview = new DishReview(obj.getInt(JSON_REST_ID), review.getUsername(), review.getRanking(), review.getDescription());
-		return dishReview;
+		RestaurantReview restReview = new RestaurantReview(obj.getInt(JSON_REST_ID), review.getUsername(), review.getRanking(), review.getDescription());
+		return restReview;
 	}
 }
