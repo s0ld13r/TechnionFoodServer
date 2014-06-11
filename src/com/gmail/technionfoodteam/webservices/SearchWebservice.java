@@ -11,6 +11,7 @@ public class SearchWebservice extends Application {
 		 router.attach("/restaurants",RestaurantsWebService.class);
 		 router.attach("/restaurant/{restId}", RestaurantWebService.class);
 		 router.attach("/dish/{dishId}", DishWebService.class);
+		 router.attach("/dishTypes", DishTypesWebService.class);
 		 return router;
 	 }
 }

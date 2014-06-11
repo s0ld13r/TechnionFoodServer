@@ -11,6 +11,7 @@ import java.util.LinkedList;
 
 import com.gmail.technionfoodteam.model.Dish;
 import com.gmail.technionfoodteam.model.DishReview;
+import com.gmail.technionfoodteam.model.IntStringPair;
 import com.gmail.technionfoodteam.model.Restaurant;
 import com.gmail.technionfoodteam.model.RestaurantReview;
 import com.jolbox.bonecp.BoneCP;
@@ -567,5 +568,28 @@ public class TechnionFoodDb {
 			}
 		}
 		return listOfReviews;
+	}
+	public LinkedList<IntStringPair> getTypesValues(){
+		LinkedList<IntStringPair> res = new LinkedList<IntStringPair>();
+		Connection con = null;
+		try {
+			con = getAutoCommitConnection();
+			PreparedStatement stmt = con.prepareStatement(
+					"SELECT * FROM " +TBL_DISH_TYPES);
+			ResultSet queryRes = stmt.executeQuery();
+			while(queryRes.next()){
+				res.add(new IntStringPair(queryRes.getInt(DT_ID), queryRes.getString(DT_NAME)));
+			}
+			
+		}catch(Exception ex){
+			System.out.println("Error during getting list of dish types:\n" + ex.getMessage());
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return res;
 	}
 }
