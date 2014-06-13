@@ -1,20 +1,24 @@
 package com.gmail.technionfoodteam.model;
 
+import java.util.LinkedList;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.gmail.technionfoodteam.AppInitContextListener;
 
 public class Restaurant {
-	public static String JSON_OBJECT_NAME = "restaurant";
-	public static String JSON_ID = "id";
-	public static String JSON_NAME = "name";
-	public static String JSON_ADDRESS = "address";
-	public static String JSON_LAT = "lat";
-	public static String JSON_LNG = "lng";
-	public static String JSON_RANKING = "ranking";
-	public static String JSON_PICTURE = "picture";
-	public static String JSON_TELEPHONE = "telephone_number";
+	public static final String JSON_OBJECT_NAME = "restaurant";
+	public static final String JSON_ID = "id";
+	public static final String JSON_NAME = "name";
+	public static final String JSON_ADDRESS = "address";
+	public static final String JSON_LAT = "lat";
+	public static final String JSON_LNG = "lng";
+	public static final String JSON_RANKING = "ranking";
+	public static final String JSON_PICTURE = "picture";
+	public static final String JSON_TELEPHONE = "telephone_number";
+	public static final String JSON_OPENING_HOURS = "opening_hours";
 	private int id;
 	private String name;
 	private String address;
@@ -23,6 +27,7 @@ public class Restaurant {
 	private double ranking;
 	private String pathToLogo;
 	private String telephoneNumber;
+	private LinkedList<DayOpeningHours> openingHours;
 	public Restaurant(String name, String address, double lat, double lng, 
 			double ranking, String pathToLog, String tel){
 		this.name = name;
@@ -59,6 +64,15 @@ public class Restaurant {
 	public String getPathToLogo() {
 		return AppInitContextListener.basePathToPictures+pathToLogo;
 	}
+	public String getTelephoneNumber(){
+		return telephoneNumber;
+	}
+	public LinkedList<DayOpeningHours> getOpeningHours(){
+		return openingHours;
+	}
+	public void setOpeningHours(LinkedList<DayOpeningHours> openingHours){
+		this.openingHours = openingHours;
+	}
 	public JSONObject toJSON() throws JSONException{
 		JSONObject obj = new JSONObject();
 		obj.put(JSON_ID, getId());
@@ -69,14 +83,31 @@ public class Restaurant {
 		obj.put(JSON_RANKING, getRanking());
 		obj.put(JSON_PICTURE, getPathToLogo());
 		obj.put(JSON_TELEPHONE, getTelephoneNumber());
+		if(openingHours != null){
+			JSONArray arr = new JSONArray();
+			for(DayOpeningHours doh : openingHours){
+				arr.put(doh.toJSON());
+			}
+			obj.put(JSON_OPENING_HOURS, arr);
+		}
 		return obj;
 	}
 	public static Restaurant fromJSON(JSONObject obj) throws JSONException{
 		Restaurant restaurant = new Restaurant(obj.getInt(JSON_ID), obj.getString(JSON_NAME),obj.getString(JSON_ADDRESS),
 				obj.getDouble(JSON_LAT),obj.getDouble(JSON_LNG), obj.getDouble(JSON_RANKING), obj.getString(JSON_PICTURE), obj.getString(JSON_TELEPHONE));
+		try{
+			JSONArray arr = obj.getJSONArray(JSON_OPENING_HOURS);
+			if(arr!=null){
+				LinkedList<DayOpeningHours> lst = new LinkedList<DayOpeningHours>();
+				for(int i=0;i<arr.length();i++){
+					DayOpeningHours t = DayOpeningHours.fromJSON(arr.getJSONObject(i));
+					if(t!= null){
+						lst.addLast(t);
+					}
+				}
+				restaurant.setOpeningHours(lst);
+			}
+		}catch(JSONException ex){}
 		return restaurant;
-	}
-	public String getTelephoneNumber(){
-		return telephoneNumber;
 	}
 }

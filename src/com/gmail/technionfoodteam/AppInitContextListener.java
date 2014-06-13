@@ -49,7 +49,7 @@ public class AppInitContextListener implements ServletContextListener {
 		db.addOpeningTime(1, 6, new Time(9, 0, 0), new Time(13, 30, 0));
 		db.addOpeningTime(1, 7, new Time(0, 0, 0), new Time(0, 0, 0));
 		
-		db.addDish("Muesli", 30, "Granola and friuts with yogurt", 1, 1, "muesli.jpg");		//dish #1
+		db.addDish("Muesli", 30, "Granola and friuts with yogurt", 1, 6, "muesli.jpg");		//dish #1
 		db.addDishReview(1, "Dana", 3, "good");
 		db.addDishReview(1, "Moshe", 4, "very good");
 		
@@ -142,7 +142,7 @@ public class AppInitContextListener implements ServletContextListener {
 		db.addDish("Pastries", 14, "Butter/Almonds/Chocolate/Cheese", 3, 1, "croissant.jpg");		//dish #23
 		db.addDishReview(23, "Moran", 2, "Not fresh enough");
 		
-		db.addDish("Muesli", 20, "Granola and friuts with yogurt", 3, 1, "muesli.jpg");		//dish #24
+		db.addDish("Muesli", 20, "Granola and friuts with yogurt", 3, 6, "muesli.jpg");		//dish #24
 		db.addDishReview(24, "Shiran", 4, "The yogurt is great");
 		db.addDishReview(24, "Keren", 4, "Good, more fruits and it will be perfect");
 		

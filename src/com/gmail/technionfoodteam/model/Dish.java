@@ -16,6 +16,8 @@ public class Dish {
 	public static String JSON_RANKING = "ranking";
 	public static String JSON_PICTURE = "picture";
 	public static String JSON_REST_NAME = "restName";
+	public static String JSON_REST_LAT = "restLat";
+	public static String JSON_REST_LNG = "restLng";
 	private int id;
 	private String name;
 	private double price;
@@ -25,6 +27,8 @@ public class Dish {
 	private double ranking;
 	private String photo;
 	private String restaurantName;
+	private double restLat;
+	private double restLng;
 	public Dish(String name, double price, String description, int restId, int dishType, double ranking, String photo){
 		this.name = name;
 		this.price = price;
@@ -78,13 +82,31 @@ public class Dish {
 		obj.put(JSON_RANKING, getRanking());
 		obj.put(JSON_PICTURE, getPhoto());
 		obj.put(JSON_REST_NAME, getRestaurantName());
+		obj.put(JSON_REST_LAT, getRestLat());
+		obj.put(JSON_REST_LNG, getRestLng());
 		return obj;
 	}
-	public Dish fromJSON(JSONObject obj) throws JSONException{
+	public static Dish fromJSON(JSONObject obj) throws JSONException{
 		Dish dish = new Dish(obj.getInt(JSON_ID), obj.getString(JSON_NAME), 
 				obj.getDouble(JSON_PRICE), obj.getString(JSON_DESCRIPTION),
 				obj.getInt(JSON_REST_ID), obj.getInt(JSON_DISH_TYPE), obj.getDouble(JSON_RANKING),
 				obj.getString(JSON_PICTURE), obj.getString(JSON_REST_NAME));
+		try{
+			dish.setRestLat(obj.getDouble(JSON_REST_LAT));
+			dish.setRestLng(obj.getDouble(JSON_REST_LNG));
+		}catch(JSONException ex){}
 		return dish;
+	}
+	public double getRestLat() {
+		return restLat;
+	}
+	public void setRestLat(double restLat) {
+		this.restLat = restLat;
+	}
+	public double getRestLng() {
+		return restLng;
+	}
+	public void setRestLng(double restLng) {
+		this.restLng = restLng;
 	}
 }

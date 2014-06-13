@@ -7,6 +7,7 @@ import javax.servlet.ServletContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.restlet.Client;
+import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
@@ -14,33 +15,23 @@ import com.gmail.technionfoodteam.database.TechnionFoodDb;
 import com.gmail.technionfoodteam.model.Dish;
 import com.gmail.technionfoodteam.model.Restaurant;
 
-
-public class RestaurantWebService extends ServerResource {
+public class DealsWebService extends ServerResource {
 	@Get
-	public JSONObject represent(){
-		JSONObject obj = new JSONObject();
+	public JsonRepresentation represent(){
+		JSONArray dishes = new JSONArray();
 		Client serverDispatcher = getContext().getServerDispatcher();
 		ServletContext servletContext = (ServletContext)serverDispatcher.getContext().getAttributes()
 		                    .get("org.restlet.ext.servlet.ServletContext");
 		TechnionFoodDb db = (TechnionFoodDb)servletContext.getAttribute("db");
 		try{
-			int restId = Integer.parseInt((String) getRequest().getAttributes().get("restId"));
-			Restaurant rest = db.getRestaurant(restId);
-			if(rest == null){
-				return obj;
-			}
-			rest.setOpeningHours(db.getRestautantsOpeningHours(restId));
-			obj.put(Restaurant.JSON_OBJECT_NAME, rest.toJSON());
-			JSONArray dishes = new JSONArray();
-			LinkedList<Dish> listOfDishes = db.getAllRestaurantDishes(restId);
+			LinkedList<Dish> listOfDishes = db.getAllDeals();
 			for(int i=0; i<listOfDishes.size();i++){
 				dishes.put(listOfDishes.get(i).toJSON());
-			}
-			obj.put("dishes", dishes);
-			
+			}			
 		}catch(Exception ex){
-			System.out.println("Error in Restaurant web service: " + ex.getMessage());
+			System.out.println("Error in Deals web service: " + ex.getMessage());
 		} 
-		return obj;
+		return new JsonRepresentation(dishes);
 	}
+	
 }

@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.util.LinkedList;
 
+import com.gmail.technionfoodteam.model.DayOpeningHours;
 import com.gmail.technionfoodteam.model.Dish;
 import com.gmail.technionfoodteam.model.DishReview;
 import com.gmail.technionfoodteam.model.IntStringPair;
@@ -586,6 +587,150 @@ public class TechnionFoodDb {
 			
 		}catch(Exception ex){
 			System.out.println("Error during getting list of dish types:\n" + ex.getMessage());
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return res;
+	}
+	public LinkedList<DayOpeningHours> getRestautantsOpeningHours(int restId){
+		LinkedList<DayOpeningHours> res = new LinkedList<DayOpeningHours>();
+		Connection con = null;
+		try {
+			con = getAutoCommitConnection();
+			PreparedStatement stmt = con.prepareStatement(
+					"SELECT * FROM " +TBL_OPENING_HOURS + " WHERE " + OH_REST_ID + " = " + restId);
+			ResultSet queryRes = stmt.executeQuery();
+			while(queryRes.next()){
+				Time startTime = queryRes.getTime(OH_START_TIME);
+				Time endTime = queryRes.getTime(OH_END_TIME);
+				int day = queryRes.getInt(OH_DAY);
+				res.add(new DayOpeningHours(day, startTime, endTime));
+			}
+			
+		}catch(Exception ex){
+			System.out.println("Error during getting list of opening hours:\n" + ex.getMessage());
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return res;
+	}
+	
+	public DayOpeningHours getRestautantsOpeningHoursAtDay(int restId, int day){
+		Connection con = null;
+		try {
+			con = getAutoCommitConnection();
+			PreparedStatement stmt = con.prepareStatement(
+					"SELECT * FROM " +TBL_OPENING_HOURS + " WHERE " + 
+					OH_REST_ID + " = " + restId + " AND " + OH_DAY + " = " + day);
+			ResultSet queryRes = stmt.executeQuery();
+			if(queryRes.next()){
+				Time startTime = queryRes.getTime(OH_START_TIME);
+				Time endTime = queryRes.getTime(OH_END_TIME);
+				return new DayOpeningHours(day, startTime, endTime);
+			}
+			
+		}catch(Exception ex){
+			System.out.println("Error during getting day opening hours:\n" + ex.getMessage());
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public LinkedList<Dish> getAllDeals(){
+		LinkedList<Dish> resDishes = new LinkedList<Dish>();
+		Connection con = null;
+		try {
+			con = getAutoCommitConnection();
+			PreparedStatement stmt = con.prepareStatement(
+					"SELECT * FROM " +VIEW_DISHES_EXT + 
+					" WHERE " + DISH_TYPE + " = 6" );
+			ResultSet queryRes = stmt.executeQuery();
+			while(queryRes.next()){
+				int devider = queryRes.getInt(DISH_NUM_OF_REVIEWS);
+				double ranking = 0;
+				if(devider!= 0){
+					ranking = ((double)queryRes.getInt(DISH_SUM_OF_REVIEWS)) / devider;
+				}
+				Dish dish = new Dish(queryRes.getInt(DISH_ID),
+						queryRes.getString(DISH_NAME), queryRes.getDouble(DISH_PRICE),
+						queryRes.getString(DISH_DESCRIPTION), queryRes.getInt(DISH_REST_ID),
+						queryRes.getInt(DISH_TYPE),ranking, queryRes.getString(DISH_PICTURE), queryRes.getString("rest_name"));
+				resDishes.add(dish);
+			}
+		}catch(Exception ex){
+			System.out.println("Error during creating deals list:\n" + ex.getMessage());
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return resDishes;
+	}
+	public LinkedList<Dish> getAllQueryDishes(LinkedList<Restaurant> properRestaurants, LinkedList<Integer> dishTypesList, double maxPrice){
+		
+		LinkedList<Dish> res = new LinkedList<Dish>();
+		if((properRestaurants == null) || (properRestaurants.isEmpty())){
+			return res;
+		}
+		Connection con = null;
+		StringBuilder restConstrain = new StringBuilder();
+		for(int i=0;i<properRestaurants.size();i++){
+			restConstrain.append(properRestaurants.get(i).getId());
+			if(i != (properRestaurants.size()-1)){
+				restConstrain.append(" ,");
+			}
+		}
+		StringBuilder typeConstrain = new StringBuilder();
+
+		if((dishTypesList != null) && (!dishTypesList.isEmpty())){
+			typeConstrain.append(" AND "+ DISH_TYPE + " IN (");
+			for(int i=0;i<dishTypesList.size();i++){
+				typeConstrain.append(dishTypesList.get(i));
+				if(i != (dishTypesList.size()-1)){
+					typeConstrain.append(" ,");
+				}
+			}
+			typeConstrain.append(" ) ");
+		}
+		StringBuilder priceConstrain = new StringBuilder();
+		if(maxPrice > 0){
+			priceConstrain.append(" AND (" + DISH_PRICE + " < " + maxPrice + " ) ");
+		}
+		try {
+			con = getAutoCommitConnection();
+			PreparedStatement stmt = con.prepareStatement(
+					"SELECT * FROM " +VIEW_DISHES_EXT + 
+					" WHERE " + DISH_REST_ID + " IN (" +restConstrain.toString() +")" + typeConstrain.toString() + priceConstrain.toString()) ;
+			ResultSet queryRes = stmt.executeQuery();
+			while(queryRes.next()){
+				int devider = queryRes.getInt(DISH_NUM_OF_REVIEWS);
+				double ranking = 0;
+				if(devider!= 0){
+					ranking = ((double)queryRes.getInt(DISH_SUM_OF_REVIEWS)) / devider;
+				}
+				Dish dish = new Dish(queryRes.getInt(DISH_ID),
+						queryRes.getString(DISH_NAME), queryRes.getDouble(DISH_PRICE),
+						queryRes.getString(DISH_DESCRIPTION), queryRes.getInt(DISH_REST_ID),
+						queryRes.getInt(DISH_TYPE),ranking, queryRes.getString(DISH_PICTURE), queryRes.getString("rest_name"));
+				res.add(dish);
+			}
+		}catch(Exception ex){
+			System.out.println("Error during creating query dishes list:\n" + ex.getMessage());
 		} finally {
 			try {
 				con.close();
